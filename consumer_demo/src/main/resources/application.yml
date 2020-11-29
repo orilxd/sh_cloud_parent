@@ -1,0 +1,33 @@
+server:
+  port: 80
+eureka:
+  client:
+    service-url: # EurekaServer地址
+      defaultZone: http://127.0.0.1:10086/eureka/
+
+spring:
+  application:
+    name: consumer
+
+feign:
+  hystrix:
+    enabled: true # 开启Feign的熔断功能
+
+ribbon:
+  eager-load:
+    enabled: true
+    clients: user-service  # 饥饿加载 多个服务使用 "," 分割
+  ConnectTimeout: 500 # 连接超时时长
+  ReadTimeout: 1000 # 数据通信超时时长
+  MaxAutoRetriesNextServer: 2 # 切换重试多少次服务
+  MaxAutoRetries: 1 # 当前服务器的重试次数
+  OkToRetryOnAllOperations: false # 是否对所有的请求方式都重试
+
+logging:
+  level:
+    com.itheima.sh: debug
+
+hystrix: #Hystix的默认超时时长为1，我们可以通过配置修改这个值
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 2000

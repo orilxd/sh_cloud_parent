@@ -1,0 +1,19 @@
+server:
+  port: 10010 #服务端口
+spring:
+  application:
+    name: gateway-server #指定服务名
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-route # 当前路由的唯一标识
+#          uri: http://127.0.0.1:8081 # 路由的目标微服务地址
+          uri: lb://user-service # 路由的目标微服务地址
+          predicates: # 断言  判断 前端浏览器发送url和当前path是否匹配
+            - Path=/user/** # 按照路径匹配的规则
+          filters: # 过滤项
+            - AddRequestHeader=name,itheima
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
