@@ -13,6 +13,33 @@ spring:
             - Path=/user/** # 按照路径匹配的规则
           filters: # 过滤项
             - AddRequestHeader=name,itheima
+            - StripPrefix=1
+      default-filters: # 默认过滤项
+        - name: Hystrix # 指定过滤工厂名称（可以是任意过滤工厂类型）
+          args: # 指定过滤的参数
+            name: fallbackcmd  # hystrix的指令名
+            fallbackUri: forward:/fallbackTest # 失败后的跳转路径
+
+        - name: RequestRateLimiter #请求数限流 名字不能随便写
+          args:
+            key-resolver: "#{@ipKeyResolver}" # 指定一个key生成器,存放在ioc容器中bean的名称(存放规则,默认是类名首字母小写)
+            redis-rate-limiter.replenishRate: 2 # 生成令牌的速率
+            redis-rate-limiter.burstCapacity: 2 # 桶的容量
+
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+
+  redis:
+    host: 192.168.209.88
+    port: 6379
+
 eureka:
   client:
     service-url:
